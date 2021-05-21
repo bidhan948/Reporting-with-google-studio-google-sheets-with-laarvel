@@ -5,6 +5,7 @@ namespace App\Services;
 use Google_Client;
 use Google_Service;
 use Google_Service_Sheets;
+use Google_Service_Sheets_ValueRange;
 
 class googlesheet
 {
@@ -29,8 +30,19 @@ class googlesheet
         $data = $this->googleSheetService
             ->spreadsheets_values
             ->batchget($this->google_sheet_id, ['ranges' => $range]);
-        
+
         return  $data->getValueRanges()[0]->values;
+    }
+
+    public function saveDataToSheet(array $data)
+    {
+        $dimension = $this->getDimensions($this->google_sheet_id);
+        $body = new Google_Service_Sheets_ValueRange([
+            'values' => $data
+        ]);
+        $params = ['valueInputOption'=>'USER_ENTERED'];
+        $range = "A". ($dimension['rowCount'] + 1);
+        dd($this->googleSheetService->spreadsheets_values->update($this->google_sheet_id,$range,$body,$params));
     }
 
     private function getDimensions($spreadSheetId)
