@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\googlesheet;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+Route::get('/', function (googlesheet $googlesheet) {
+    $googlesheet->readGoogleSheet();
     return view('welcome');
 });
